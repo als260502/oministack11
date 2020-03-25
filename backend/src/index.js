@@ -6,7 +6,7 @@ const cors = require('cors')
 
 const app = express()
 
-app.use(cors)
+app.use(cors())
 app.use(morgan('dev'))
 app.use(helmet())
 app.use(express.json())

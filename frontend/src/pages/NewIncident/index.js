@@ -1,12 +1,49 @@
-import React from 'react';
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom'
+
+import api from '../../services/api'
 
 import { FiArrowLeft } from 'react-icons/fi'
 import logoImg from '../../assets/logo.svg'
 
 import './styles.css';
 
+
 export default function NewIncident() {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [value, setValue] = useState('')
+
+  const history = useHistory()
+
+  const ongId = localStorage.getItem('ongId')
+
+  async function handleNewIncident(e) {
+    e.preventDefault()
+
+    const data = {
+      title,
+      description,
+      value
+    }
+
+    try {
+      const response = await api.post('incidents', data, {
+        headers: {
+          Authorization: ongId,
+        }
+      })
+
+      history.push('/profile')
+
+    } catch (error) {
+      alert('Erro ao cadastrar caso, tente novamente')
+      console.error(error)
+    }
+
+
+  }
+
   return (
     <div className="new-incidents-container">
       <div className="content">
@@ -23,14 +60,26 @@ export default function NewIncident() {
           Voltar para home
         </Link>
         </section>
-        <form >
+        <form onSubmit={handleNewIncident}>
 
-          <input placeholder="Titulo do caso" />
+          <input
+            placeholder="Titulo do caso"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
 
-          <textarea placeholder="Descrição " />
+          <textarea
+            placeholder="Descrição "
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+          />
 
 
-          <input placeholder="Valor em reais" />
+          <input
+            placeholder="Valor em reais"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+          />
 
 
 
