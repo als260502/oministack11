@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import { ActivityIndicator, View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 
 import api from '../../services/api'
 
@@ -29,10 +29,13 @@ export default function Incidents() {
     const response = await api.get('incidents', {
       params: { page }
     })
+
     setIncidents([...incidents, ...response.data])
     setTotal(response.headers['x-total-count'])
     setPage(page + 1)
     setLoading(false)
+    if (response.data.length === 0) setLoading(false)
+    console.log(total, incidents.length)
   }
 
 
@@ -61,6 +64,7 @@ export default function Incidents() {
         showsVerticalScrollIndicator={false}
         onEndReached={loadIncidents}
         onEndReachedThreshold={0.2}
+        ListFooterComponent={loading && < ActivityIndicator />}
         renderItem={({ item: incident }) => (
           <View style={styles.incident}>
 
